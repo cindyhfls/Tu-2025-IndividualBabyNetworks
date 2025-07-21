@@ -206,40 +206,11 @@ end
 [~,consensus_bestk] = max(prop,[],2);
 plot_network_assignment_parcel_key(Parcels,consensus_bestk);
 print(['./Figure/consensus_assn_bestk.png'],'-dpng','-r300')
-try
-    CW = smartload(['./template_matching_results/IM_consensus_eLABE_Y2_Y3_assn_bestk',num2str(bestk),'.mat']);
-catch
-    switch bestk
-        case 23
-            %% Assign colors for 23 network solution
-            [CW,GenOrder] = assign_networks_by_template(consensus_bestk,IM_Tu19,0.3);
-            CW.Nets{1} = 'Language'; CW.cMap(1,:) = IM_Tu19.cMap(10,:);
-            CW.Nets{2} = 'Frontoparietal';CW.cMap(2,:) =[153 101 21]/255;% [255 223 0]/255;
-            % CW.Nets{4}= 'Primary Visual'; CW.cMap(4,:) =[153 101 21]/255;
-            CW.Nets{5}= 'Parietal Memory';
-            CW.Nets{6}= 'Ventral Insula'; CW.cMap(6,:) = [0.7 0.8 0.7];
-            CW.Nets{7} = 'Premotor/Dorsal Attention II'
-            CW.Nets{8} = 'Inferior Orbitofrontal';CW.cMap(8,:) = [240,255,100]/255;%
-            CW.Nets{10}= 'Medial Default';
-            CW.Nets{11}= 'Context Association';
-            CW.Nets{12}= 'Somato-cognitive-action'; CW.cMap(12,:) = [126 0 102]/255;
-            CW.Nets{13} = 'Default-Parietal';
-            CW.Nets{14} = 'Visual Peripheral';
-            CW.Nets{15}= 'Action Mode';
-            CW.Nets{17} = 'Visual-Streams';
-            CW.Nets{18} = 'Default-Anterolateral';
-            CW.Nets{19} = 'Salience II';CW.cMap(19,:) = [132 176 103]/255;
-            CW.Nets{20} = 'Temporal Default';CW.cMap(20,:) = [255 0 0]/255;
-            CW.Nets{23} = 'Dorsal SM';CW.cMap(23,:) = IM_Tu19.cMap(18,:);
-        case 7
-            [CW,GenOrder] = assign_networks_by_template(consensus_bestk,IM_Tu12,0.3);
-        case 17
-            IM23 = load('./template_matching_results/IM_consensus_eLABE_Y2_Y3_assn_bestk23.mat');
-            [CW,GenOrder] = assign_networks_by_template(consensus_bestk,IM23,0.3);
-            CW.Nets{13} = 'Dorsal SM'; CW.cMap(13,:) = IM_Tu19.cMap(18,:);
-    end
-end
-inet =6
+
+% Load manual specification for the network colors and name
+CW = smartload(['./template_matching_results/IM_consensus_eLABE_Y2_Y3_assn_bestk',num2str(bestk),'.mat']); 
+
+inet = 6
 plot_network_assignment_parcel_key(Parcels,double(consensus_bestk==inet),CW.cMap(inet,:));
 
 plot_network_assignment_parcel_key(Parcels,consensus_bestk,CW.cMap);
@@ -267,23 +238,7 @@ colormap(ROY_BIG_BL);caxis([-0.5,0.5]);
 axis off
 print('./Figure/network_FC_concatenated','-dpng','-r300');
 
-return
-
-%% Write to IM file that can be loaded to plot the networks on the brain
-clear IM
-IM.name=['IM_consensus_eLABE_Y2_Y3_assn_bestk',num2str(bestk)];
-IM.cMap=CW.cMap;
-IM.Nets= CW.Nets;
-load('/data/wheelock/data1/people/Cindy/BCP/ParcelPlots/Parcels_Tu_326.mat','ROIxyz');
-IM.ROIxyz=ROIxyz;
-Nroi = length(consensus_bestk);
-IM.key=[[1:Nroi]',zeros(Nroi,1)];
-[IM.key(:,2),IM.order]=sort(IM_Remove_Naming_Gaps_HSB(consensus_bestk));
-IM.ROIxyz=IM.ROIxyz(IM.order,:);
-IM=Org_IM_DVLR_HSB(IM);
-save(['./template_matching_results/',IM.name,'.mat'],'IM');
-
-% Plot abundance across networks
+%% Plot abundance across networks
 [~,sort_sub_id] = sort(T.age_yrs(T.in_template==1));
 
 figure;
@@ -386,6 +341,7 @@ for inet = 1:bestk
     close all
 end
 
+%% Saving
 eval(['C_bestk',num2str(bestk),'=C_bestk;'])
 eval(['assn_bestk',num2str(bestk),'=assn_bestk;'])
 clear C_bestk assn_bestk
