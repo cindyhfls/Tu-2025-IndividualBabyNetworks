@@ -1,7 +1,7 @@
 % main_PFM_Lynch_postprocessing
 clear;close all;clc;
-addpath(genpath('/data/wheelock/data1/people/Cindy/PublicRepo/NLA_toolbox_070319'))
-addpath(genpath('/data/wheelock/data1/people/Cindy/PublicRepo/PFM')); % Repository from Lynch 2024 Nature
+addpath(genpath('/data/wheelock/data1/people/Cindy/PublicRepo/NLA_toolbox_070319')) % https://github.com/cindyhfls/MATLAB_BrainParcelVisualizationFunctions
+addpath(genpath('/data/wheelock/data1/people/Cindy/PublicRepo/PFM')); % https://github.com/cindyhfls/PFM
 addpath('./subjlists');
 addpath('./CIFTI_read_save');
 
